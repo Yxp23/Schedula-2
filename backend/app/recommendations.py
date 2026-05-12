@@ -7,6 +7,7 @@ Scoring factors: RMP professor rating, seat availability, gen-ed match, course l
 from sqlalchemy.orm import Session
 from app.models import DegreeTrack, RequirementType, Course, CourseSection, Professor
 from typing import Optional
+import json
 
 
 def get_recommendations(
@@ -35,6 +36,7 @@ def get_recommendations(
         if course:
             completed_courses.append(course)
     completed_ids_set = set(completed_course_ids)
+    completed_codes = {c.code for c in completed_courses}
 
     recommendations = []
 
@@ -52,7 +54,7 @@ def get_recommendations(
                     continue
 
                 target = db.query(Course).filter(Course.id == rule.target_course_id).first()
-                if not target:
+                if not target or not _meets_prereqs(target, completed_codes):
                     continue
 
                 rec = _build_recommendation(
@@ -87,7 +89,7 @@ def get_recommendations(
                 best_score = -1.0
                 for aid in alt_ids:
                     alt = db.query(Course).filter(Course.id == aid).first()
-                    if not alt:
+                    if not alt or not _meets_prereqs(alt, completed_codes):
                         continue
                     rec = _build_recommendation(
                         db=db,
@@ -162,6 +164,8 @@ def get_recommendations(
                 best_rec = None
                 best_score = -1.0
                 for pc in pool_courses:
+                    if not _meets_prereqs(pc, completed_codes):
+                        continue
                     rec = _build_recommendation(
                         db=db,
                         course=pc,
@@ -201,6 +205,20 @@ def _course_level(course: Course) -> int:
         return int("".join(filter(str.isdigit, course.code.split()[-1])))
     except (ValueError, IndexError):
         return 0
+
+
+def _meets_prereqs(course: Course, completed_codes: set) -> bool:
+    """Checks if a student has completed all required prereqs for a course."""
+    if not course.prerequisites:
+        return True
+    try:
+        reqs = json.loads(course.prerequisites)
+        for req in reqs:
+            if req not in completed_codes:
+                return False
+        return True
+    except Exception:
+        return True
 
 
 def _build_recommendation(

@@ -173,6 +173,36 @@ def seed_full_cs():
     free = add_category("Free Electives", 19)
     # No specific rules — any course counts
 
+    # ── 15. INJECT PREREQUISITES FROM FLOWCHART ───────────────
+    print("\n📋 Injecting Prerequisites...")
+    prereqs = {
+        "CMPSC 132": ["CMPSC 131", "MATH 140"],
+        "CMPSC 221": ["CMPSC 132"],
+        "CMPSC 311": ["CMPSC 221"],
+        "CMPSC 360": ["CMPSC 132", "MATH 141"],
+        "CMPSC 465": ["CMPSC 311", "CMPSC 360"],
+        "CMPSC 473": ["CMPSC 311", "CMPSC 465"],
+        "CMPSC 461": ["CMPSC 360"],
+        "CMPSC 464": ["CMPSC 461"],
+        "CMPEN 270": ["PHYS 211", "MATH 141"],
+        "CMPEN 331": ["CMPEN 270", "CMPSC 132"],
+        "MATH 141": ["MATH 140"],
+        "MATH 220": ["MATH 140"],
+        "MATH 230": ["MATH 141"],
+        "PHYS 211": ["MATH 140"],
+        "PHYS 212": ["MATH 141", "PHYS 211"],
+        "STAT 318": ["MATH 141"],
+        "STAT 319": ["STAT 318"],
+        "ENGL 202C": ["ENGL 15"]
+    }
+    
+    import json
+    for code, reqs in prereqs.items():
+        course = db.query(Course).filter(Course.code == code).first()
+        if course:
+            course.prerequisites = json.dumps(reqs)
+            db.add(course)
+
     db.commit()
     
     # ── Summary ───────────────────────────────────────────────

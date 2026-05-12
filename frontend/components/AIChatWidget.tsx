@@ -2,6 +2,8 @@
 
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState, useRef, useEffect } from 'react';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 
 export default function AIChatWidget({ activeSchedule }: { activeSchedule: any }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -123,7 +125,25 @@ export default function AIChatWidget({ activeSchedule }: { activeSchedule: any }
                         ? 'bg-black dark:bg-white text-white dark:text-black font-medium' 
                         : 'bg-black/5 dark:bg-white/[0.04] border border-black/5 dark:border-white/[0.05] text-neutral-800 dark:text-white/80'
                     }`}>
-                      {m.content}
+                      {m.role === 'user' ? (
+                        m.content
+                      ) : (
+                        <ReactMarkdown 
+                          remarkPlugins={[remarkGfm]}
+                          components={{
+                            p: ({node, ...props}) => <p className="mb-2 last:mb-0" {...props} />,
+                            ul: ({node, ...props}) => <ul className="list-disc pl-4 mb-2 space-y-1" {...props} />,
+                            ol: ({node, ...props}) => <ol className="list-decimal pl-4 mb-2 space-y-1" {...props} />,
+                            li: ({node, ...props}) => <li className="pl-1" {...props} />,
+                            strong: ({node, ...props}) => <strong className="font-semibold text-black dark:text-white" {...props} />,
+                            table: ({node, ...props}) => <div className="overflow-x-auto my-3 border border-black/10 dark:border-white/10 rounded-lg"><table className="w-full text-left text-xs border-collapse" {...props} /></div>,
+                            th: ({node, ...props}) => <th className="border-b border-black/10 dark:border-white/10 py-2 px-3 font-medium text-black dark:text-white bg-black/5 dark:bg-white/5" {...props} />,
+                            td: ({node, ...props}) => <td className="border-b border-black/5 dark:border-white/5 py-2 px-3" {...props} />,
+                          }}
+                        >
+                          {m.content}
+                        </ReactMarkdown>
+                      )}
                     </div>
                   </div>
                 ))}

@@ -73,7 +73,7 @@ export function useStudentContext() {
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'https://schedula-2-production.up.railway.app';
 const STORAGE_KEY = 'schedula_completed_courses';
-const TRACK_ID = 2; // Computer Science, B.S.
+const TRACK_ID = 3; // Computer Science, B.S.
 
 // Default courses (seeded for demo)
 const DEFAULT_COMPLETED: CompletedCourse[] = [
@@ -147,7 +147,7 @@ export function StudentProvider({ children }: { children: ReactNode }) {
     if (!hydrated) return;
     setRecsLoading(true);
     const idsStr = completedCourses.map(c => c.id).join(',');
-    fetch(`${API_BASE}/api/recommendations/${TRACK_ID}?completed_ids=${idsStr}&limit=12`)
+    fetch(`${API_BASE}/api/recommendations/${TRACK_ID}?completed_ids=${idsStr}&limit=30`)
       .then(r => r.json())
       .then(data => {
         setRecommendations(data.recommendations || []);

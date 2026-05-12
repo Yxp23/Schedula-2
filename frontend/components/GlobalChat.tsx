@@ -32,7 +32,7 @@ export default function GlobalChat() {
       })),
     } : null,
     completedCourses: completedCourses.map(c => c.code),
-    topRecommendations: recommendations.slice(0, 10).map(r => ({
+    topRecommendations: recommendations.slice(0, 30).map(r => ({
       code: r.course.code,
       title: r.course.title,
       credits: r.course.credits,
