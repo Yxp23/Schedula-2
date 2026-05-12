@@ -46,7 +46,7 @@ const FadeUp = ({ children, delay = 0, className = '' }: { children: React.React
   );
 };
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'https://schedula-2-production.up.railway.app';
 
 export default function AuditPage() {
   // ── Shared context (replaces local state + fetch hooks) ──

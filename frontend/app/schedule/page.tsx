@@ -51,7 +51,7 @@ const FadeUp = ({ children, delay = 0, className = '' }: { children: React.React
   </motion.div>
 );
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'https://schedula-2-production.up.railway.app';
 
 export default function SchedulePage() {
   const { completedCourses, recommendations, audit } = useStudentContext();

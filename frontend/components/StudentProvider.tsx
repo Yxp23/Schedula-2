@@ -71,9 +71,9 @@ export function useStudentContext() {
 
 // ── Provider ─────────────────────────────────────────────────────────
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'https://schedula-2-production.up.railway.app';
 const STORAGE_KEY = 'schedula_completed_courses';
-const TRACK_ID = 3; // Computer Science, B.S.
+const TRACK_ID = 2; // Computer Science, B.S.
 
 // Default courses (seeded for demo)
 const DEFAULT_COMPLETED: CompletedCourse[] = [

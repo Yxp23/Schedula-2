@@ -69,7 +69,7 @@ const StarRating = ({ rating }: { rating: number }) => {
 
 // ── Course Card ────────────────────────────────────────────────────
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'https://schedula-2-production.up.railway.app';
 
 const CourseCard = ({ course, index }: { course: Course; index: number }) => {
   const { isCompleted, getRequirementForCourse, addCourse } = useStudentContext();
