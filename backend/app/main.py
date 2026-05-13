@@ -89,7 +89,7 @@ def get_degree_audit(
 def get_course_recommendations(
     track_id: int,
     completed_ids: str = Query("", description="Comma separated list of completed course IDs"),
-    limit: int = Query(8, le=20),
+    limit: int = Query(8, le=50),
     db: Session = Depends(get_db),
 ):
     """
