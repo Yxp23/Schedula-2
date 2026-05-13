@@ -5,6 +5,7 @@ from typing import List, Dict, Optional
 from app.models import Course, CourseSection
 from app.degree_logic import generate_audit
 from app.ml.workload_predictor import predict_burnout
+from app.recommendations import _meets_prereqs
 
 def convert_time(time_str: str) -> int:
     """Converts '09:05' to minutes since midnight for easy comparison."""
@@ -85,6 +86,9 @@ def generate_schedule_csp(
     if "error" in audit:
         return {"error": audit["error"]}
         
+    completed_courses = db.query(Course).filter(Course.id.in_(completed_course_ids)).all() if completed_course_ids else []
+    completed_codes = {c.code for c in completed_courses}
+        
     missing_course_ids = []
     for cat in audit.get("categories", []):
         for rule in cat.get("rules", []):
@@ -100,6 +104,9 @@ def generate_schedule_csp(
     for cid in missing_course_ids:
         course = db.query(Course).filter(Course.id == cid).first()
         if not course: continue
+            
+        if not _meets_prereqs(course, completed_codes):
+            continue
             
         if total_credits_targeted + (course.credits or 3) > max_credits:
             continue
